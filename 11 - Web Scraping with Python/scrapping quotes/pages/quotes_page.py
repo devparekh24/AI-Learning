@@ -11,4 +11,5 @@ class QuotesPage:
     def quotes(self):
         locator = QuotesPageLocators.QUOTE
         quotes_lists = self.soup.select(locator)
+        # print(quotes_lists)
         return [QuoteParser(ql) for ql in quotes_lists]
