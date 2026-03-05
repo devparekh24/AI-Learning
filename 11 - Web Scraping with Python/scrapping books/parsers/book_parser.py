@@ -3,8 +3,13 @@ from locators.book_locator import BookLocator
 
 class BookParser:
 
+    RATINGS = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
+
     def __init__(self, parent):
         self.parent = parent
+
+    def __repr__(self):
+        return f"<Book: {self.title}, its price is £{self.price} and rating is {self.ratings} star>"
 
     @property
     def title(self):
@@ -28,4 +33,6 @@ class BookParser:
     @property
     def ratings(self):
         locator = BookLocator.RATING
-        return self.parent.select_one(locator).attrs["class"][1]
+        rating_string = self.parent.select_one(locator).attrs["class"][1]
+        rating_number = BookParser.RATINGS[rating_string]
+        return rating_number
