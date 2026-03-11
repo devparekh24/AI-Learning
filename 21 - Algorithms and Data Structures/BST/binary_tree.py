@@ -26,36 +26,68 @@ class BinaryTree:
                     break
 
     def print_tree(self):
-        """Print the entire tree in triangle form with nodes and edges."""
+        """Print the tree with nodes connected by / and \\ edges."""
         if not self.head:
             print("Tree is empty")
             return
 
-        # Get the height of the tree
         height = self._get_height(self.head)
+        total_width = (1 << height) * 2  # generous canvas width
 
-        # Create the lines for each level
-        lines = [[] for _ in range(height)]
-        self._fill_lines(self.head, 0, lines)
+        # BFS: track (node, lo, hi) bounds; each node's column = (lo+hi)//2
+        levels = []
+        current = [(self.head, 0, total_width - 1)]
 
-        # Calculate spacing and print
-        spacing = 4
-        for level, line in enumerate(lines):
-            level_spacing = spacing * (2 ** (height - level - 1))
-            print(" " * (level_spacing // 2), end="")
-            print((" " * level_spacing).join(str(node) for node in line))
+        for _ in range(height):
+            levels.append(current)
+            next_level = []
+            for node, lo, hi in current:
+                mid = (lo + hi) // 2
+                if node:
+                    next_level.append((node.left, lo, mid - 1))
+                    next_level.append((node.right, mid + 1, hi))
+                else:
+                    next_level.append((None, lo, mid - 1))
+                    next_level.append((None, mid + 1, hi))
+            current = next_level
+
+        for level_idx, level in enumerate(levels):
+            # Node row
+            row = [' '] * total_width
+            for node, lo, hi in level:
+                if node:
+                    mid = (lo + hi) // 2
+                    val = str(node.value)
+                    start = mid - len(val) // 2
+                    for i, ch in enumerate(val):
+                        if 0 <= start + i < total_width:
+                            row[start + i] = ch
+            print(''.join(row).rstrip())
+
+            # Edge row (skip for last level)
+            if level_idx >= height - 1:
+                continue
+
+            edge_row = [' '] * total_width
+            next_lvl = levels[level_idx + 1]
+            for i, (node, lo, hi) in enumerate(level):
+                if not node:
+                    continue
+                parent_mid = (lo + hi) // 2
+                left_child, left_lo, left_hi = next_lvl[i * 2]
+                right_child, right_lo, right_hi = next_lvl[i * 2 + 1]
+                if left_child:
+                    child_mid = (left_lo + left_hi) // 2
+                    for c in range(child_mid + 1, parent_mid):
+                        edge_row[c] = '/'
+                if right_child:
+                    child_mid = (right_lo + right_hi) // 2
+                    for c in range(parent_mid + 1, child_mid):
+                        edge_row[c] = '\\'
+            print(''.join(edge_row).rstrip())
 
     def _get_height(self, node):
         """Get the height of the tree."""
         if node is None:
             return 0
         return 1 + max(self._get_height(node.left), self._get_height(node.right))
-
-    def _fill_lines(self, node, level, lines):
-        """Fill the lines with node values level by level."""
-        if node is None:
-            return
-
-        lines[level].append(node.value)
-        self._fill_lines(node.left, level + 1, lines)
-        self._fill_lines(node.right, level + 1, lines)
