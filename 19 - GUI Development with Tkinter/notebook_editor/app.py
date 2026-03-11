@@ -102,7 +102,8 @@ def check_for_changes():
     if hash(content) != text_contents[str(current)]:
         if name[-1] != "*":
             notebook.tab("current", text=name + "*")
-        elif name[-1] == "*":
+    else:
+        if name[-1] == "*":
             notebook.tab("current", text=name[:-1])
 
 
@@ -130,6 +131,8 @@ def confirm_close():
 def close_current_tab():
     if current_tab_unsaved() and not confirm_close():
         return
+    text_widget = get_text_widget()
+    del text_contents[str(text_widget)]
     if len(notebook.tabs()) == 1:
         create_file()
     notebook.forget("current")
