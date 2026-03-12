@@ -1,0 +1,48 @@
+Databases
+sqlite3
+psycopg2
+aiopg
+SQLAlchemy
+
+Web Development
+Flask
+Django
+aiohttp
+Tornado
+Sanic
+Quart
+Bottle
+
+Communucations
+smtplib
+mailgun, sendgrid
+Twilio
+
+GUI Design
+Kivy
+Tkinter
+
+Data Science
+Numpy
+Scipy
+Pandas
+Matplotlib
+Jupyter Notebooks
+Tensor Flow
+Scikit learn
+
+Computer Vision
+opencv
+simplecv
+
+Development Tools
+pylint
+flake8
+yapf
+black
+
+IDEs
+PyCharm
+vscode
+Atom
+Sublime Text
